@@ -4,7 +4,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from bot import get_reply, unload_model
-from tmp import write_to
 
 app = FastAPI()
 
@@ -29,7 +28,6 @@ async def root():
 async def chat(data: ChatRequest):
     reply = get_reply(data.message)
     print("received:", data.message)
-    # write_to(reply['response'])
     return {"message": reply['response']}
 
 @app.post("/end")

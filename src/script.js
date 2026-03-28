@@ -1,16 +1,8 @@
 const sendBtn = document.getElementById('sendBtn');
-const msgs = document.getElementById('messages');
 const welcome = document.getElementById('welcome');
 const clearBtn = document.getElementById('clearBtn');
-const chips = document.querySelectorAll('.chip');
-const chatHistory = document.getElementById('chatHistory'); 
-
-msgs.style.display='block'
-// clear the display
-clearBtn.addEventListener('click', ()=>{
-    msgs.style.display='block'
-    chatHistory.style.display='none'
-});
+const chatHistory = document.getElementById('chatHistory');
+const qiuckPrompts = document.getElementById('quickPrompts');
 
 function addMessage(type, text) {
     const wrapper = document.createElement("div");
@@ -26,15 +18,15 @@ function addMessage(type, text) {
     chatHistory.scrollTop = chatHistory.scrollHeight;
 }
 
-function sendChat(){
+function sendChat() {
     const input = document.getElementById('input');
     const prompt = input.value.trim();
     if (!prompt) return;
-    addMessage("user",prompt)
-    input.value=''
-    msgs.style.display='none'
-    sendPrompt(prompt) 
-    alert(prompt)  
+    addMessage("user", prompt)
+    input.value = ''
+    qiuckPrompts.style.display = 'none'
+    chatHistory.style.display = 'flex'
+    sendPrompt(prompt)
 }
 
 async function sendPrompt(prompt) {
@@ -53,12 +45,19 @@ async function sendPrompt(prompt) {
         console.error(error);
     }
 }
-// async function sendPrompt() {
-//     try {
-//         const response = await fetch("http://127.0.0.1:8000/")
-//         const data = await response.json();
-//         addMessage("computer", data.message)
-//     } catch (error) {
-//         console.error(error);
-//     }
-// }
+
+async function clearChat() {
+    const response = await fetch("http://127.0.0.1:8000/end", {
+        method: "POST"
+    });
+
+    const data = await response.json();
+    if (data.status === "success") {
+        console.log("Chat cleared successfully.")
+        chatHistory.innerHTML = ''
+        chatHistory.style.display = 'none'
+        qiuckPrompts.style.display = 'flex'
+    } else {
+        alert("Failed to clear chat. Please try again.")
+    }
+}
