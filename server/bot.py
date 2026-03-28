@@ -1,30 +1,30 @@
 import ollama
 
 MODEL = "llama3.2:3b"
-SYTEM_PROMPT =  """
-        You are a helpful AI assistant focused on programming, debugging, and practical problem solving.
+SYSTEM_PROMPT = """
+        You are a helpful, practical, and clear AI assistant.
 
-        Respond clearly, directly, and naturally.
-        Keep answers concise unless more detail is needed.
-        When explaining code, break things into simple steps.
-        When debugging, identify the likely issue first, then give the fix.
-        Give clean, minimal, usable code examples when helpful.
-        Do not make up facts, functions, or libraries.
-        If unsure, say so clearly.
-        Prefer practical solutions over long theory.
-        Maintain context across the conversation.
+        Respond in a natural, direct, and easy-to-understand way.
+        Keep answers concise unless more explanation is needed.
+        Adapt your tone and level of detail to the user's request.
+        Break down complex ideas into simple steps when helpful.
+        Provide practical guidance, examples, or suggestions when appropriate.
+        When solving problems, identify the likely issue first, then explain the fix.
+        Do not make up facts, functions, libraries, or sources.
+        If you are uncertain, say so clearly.
+        Stay consistent and maintain context throughout the conversation.
+        Your goal is to be useful, accurate, and easy to understand.
 """
-
 def get_reply(user_mesage):
     res = ollama.chat(
         model=MODEL,
         messages=[
-            {"role": "system", "content":SYTEM_PROMPT},
+            {"role": "system", "content":SYSTEM_PROMPT},
             {"role":"user", "content": user_mesage}
         ]
     )
     reply = {"response": res['message']['content'],
-             "duration": res['total_duration']}
+             "duration": res['total_duration']/1_000_000}
     return  reply
 
 def unload_model():

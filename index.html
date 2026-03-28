@@ -26,8 +26,8 @@
                 </svg>
             </div>
             <div class="header-info">
-                <h1>ChatBot1</h1>
-                <p><span class="status-dot"></span> Online</p>
+                <h1 id="model-name"></h1>
+                <p><span class="status-dot" id="status-dot"></span> Online</p>
             </div>
             <button class="header-btn" id="clearBtn" onclick="clearChat()">Clear chat</button>
         </header>
@@ -46,35 +46,32 @@
                 <p>Ask me anything — I'm here to assist.</p>
                 <div class="chips" id="chips">
                     <button class="chip" onclick="quickPrompt('summery')">✦ Summarise a topic</button>
-                    <button class="chip">✦ Write some code</button>
-                    <button class="chip">✦ Draft an email</button>
-                    <button class="chip">✦ Explain a concept</button>
+                    <button class="chip" onclick="quickPrompt('code')">✦ Write some code</button>
+                    <button class="chip" onclick="quickPrompt('email')">✦ Draft an email</button>
+                    <button class="chip" onclick="quickPrompt('concept')">✦ Explain a concept</button>
                 </div>
             </div>
         </div>
 
         <div class="chat-history" id="chatHistory">
         </div>
-
-    </div>
-
-    <!-- Input -->
-    <div class="input-area">
-        <div class="input-row">
-            <textarea id="input" rows="1" placeholder="Type a message…" aria-label="Message input"></textarea>
-            <button class="send-btn" id="sendBtn" aria-label="Send" onclick="sendChat()">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
-                    stroke-linejoin="round">
-                    <path d="M22 2 11 13" />
-                    <path d="M22 2 15 22 11 13 2 9l20-7z" />
-                </svg>
-            </button>
+        <div class="input-area">
+            <div class="input-row">
+                <textarea id="input" rows="1" placeholder="Type a message…" aria-label="Message input"></textarea>
+                <button class="send-btn" id="sendBtn" aria-label="Send" onclick="sendChat()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M22 2 11 13" />
+                        <path d="M22 2 15 22 11 13 2 9l20-7z" />
+                    </svg>
+                </button>
+            </div>
+            <p class="input-hint">Press <kbd>Enter</kbd> to send · <kbd>Shift+Enter</kbd> for new line</p>
         </div>
-        <p class="input-hint">Press <kbd>Enter</kbd> to send · <kbd>Shift+Enter</kbd> for new line</p>
     </div>
     </div>
 
-    <script src="./src/script.js">        
+    <script src="./src/script.js">
     </script>
 </body>
 

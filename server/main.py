@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from bot import get_reply, unload_model
+from chat_history import write_file
 
 app = FastAPI()
 
@@ -22,13 +23,16 @@ class ChatRequest(BaseModel):
 async def root():
     return {
         "status": "success",
-        "message": 'hello world, server is runing'}
+        "message": 'hello world, server is runing',
+        "model": "Llama3.23b"}
 
 @app.post("/chat")
 async def chat(data: ChatRequest):
+    write_file("user", data.message)
     reply = get_reply(data.message)
-    print("received:", data.message)
-    return {"message": reply['response']}
+    write_file("bot", reply['response'])
+    print(reply['duration'])
+    return {"message": reply['response'],"duration": reply['duration']}
 
 @app.post("/end")
 async def clear_chat():
