@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chat</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="./src/styles.css">
+
+</head>
+
+<body>
+
+    <div class="app">
+
+        <!-- Header -->
+        <header>
+            <div class="avatar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <path d="M12 2a4 4 0 0 1 4 4 4 4 0 0 1-4 4 4 4 0 0 1-4-4 4 4 0 0 1 4-4" />
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                </svg>
+            </div>
+            <div class="header-info">
+                <h1>ChatBot1</h1>
+                <p><span class="status-dot"></span> Online</p>
+            </div>
+            <button class="header-btn" id="clearBtn" onclick="clearChat()">Clear chat</button>
+        </header>
+
+        <!-- Messages -->
+        <div class="messages" id="quickPrompts">
+            <div class="welcome" id="welcome">
+                <div class="big-avatar">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M8 12h8M12 8v8" />
+                    </svg>
+                </div>
+                <h2>How can I help you?</h2>
+                <p>Ask me anything — I'm here to assist.</p>
+                <div class="chips" id="chips">
+                    <button class="chip" onclick="quickPrompt('summery')">✦ Summarise a topic</button>
+                    <button class="chip">✦ Write some code</button>
+                    <button class="chip">✦ Draft an email</button>
+                    <button class="chip">✦ Explain a concept</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-history" id="chatHistory">
+        </div>
+
+    </div>
+
+    <!-- Input -->
+    <div class="input-area">
+        <div class="input-row">
+            <textarea id="input" rows="1" placeholder="Type a message…" aria-label="Message input"></textarea>
+            <button class="send-btn" id="sendBtn" aria-label="Send" onclick="sendChat()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <path d="M22 2 11 13" />
+                    <path d="M22 2 15 22 11 13 2 9l20-7z" />
+                </svg>
+            </button>
+        </div>
+        <p class="input-hint">Press <kbd>Enter</kbd> to send · <kbd>Shift+Enter</kbd> for new line</p>
+    </div>
+    </div>
+
+    <script>
+        const sendBtn = document.getElementById('sendBtn');
+        const welcome = document.getElementById('welcome');
+        const clearBtn = document.getElementById('clearBtn');
+        const chatHistory = document.getElementById('chatHistory');
+        const qiuckPrompts = document.getElementById('quickPrompts');
+
+        function addMessage(type, text) {
+            const wrapper = document.createElement("div");
+            wrapper.className = type;
+
+            const chatCard = document.createElement("div");
+            chatCard.className = "chat-card";
+            chatCard.textContent = text;
+
+            wrapper.appendChild(chatCard);
+            chatHistory.appendChild(wrapper);
+
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+        }
+
+        function sendChat() {
+            const input = document.getElementById('input');
+            const prompt = input.value.trim();
+            if (!prompt) return;
+            addMessage("user", prompt)
+            input.value = ''
+            qiuckPrompts.style.display = 'none'
+            chatHistory.style.display = 'flex'
+            sendPrompt(prompt)
+        }
+
+        async function sendPrompt(prompt) {
+            try {
+                const response = await fetch("http://127.0.0.1:8000/chat", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ message: prompt })
+                });
+
+                const data = await response.json();
+                addMessage("computer", data.message)
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        async function clearChat() {
+            const response = await fetch("http://127.0.0.1:8000/end", {
+                method: "POST"
+            });
+
+            const data = await response.json();
+            if (data.status === "success") {
+                console.log("Chat cleared successfully.")
+                chatHistory.innerHTML = ''
+                chatHistory.style.display = 'none'
+                qiuckPrompts.style.display = 'flex'
+            } else {
+                alert("Failed to clear chat. Please try again.")
+            }
+        }
+    </script>
+</body>
+
+</html>
